@@ -16,32 +16,57 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
-    <div class="header-bar">
-      <div class="logo-container"><p>Inferysp</p></div>
-      <div class="options-container">
-        <p>raz</p>
-        <p>dwa</p>
-        <p>trzy</p>
-      </div>
-      <div class="right-bar-space"><h1>Statystyki</h1></div>
-    </div>
-    <div class="middle-content">
-      <div class="board-container">
-        <div class="board">
-          <div class="box fa" data-row="0" data-column="0"></div>
-          <div class="box fa" data-row="0" data-column="1"></div>
-          <div class="box fa" data-row="0" data-column="2"></div>
-          <div class="box fa" data-row="1" data-column="0"></div>
-          <div class="box fa" data-row="1" data-column="1"></div>
-          <div class="box fa" data-row="1" data-column="2"></div>
-          <div class="box fa" data-row="2" data-column="0"></div>
-          <div class="box fa" data-row="2" data-column="1"></div>
-          <div class="box fa" data-row="2" data-column="2"></div>
+    <div class="content">
+      <nav class="header-nav">
+        <div class="logo-container">
+          <a class="nav-logo-wordmark" href="/">
+            <p>INFERYSP</p>
+          </a>
+        </div>
+        <ul class="nav-links">
+          <li class="nav-item">
+            <a class="nav-item-link-new-game" href="/">New Game</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-item-link" href="/">Rules</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-item-link" href="/" target="_blank">Games</a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="middle-content">
+        <div class="board-container">
+          <div class="board">
+            <div class="box fa" data-row="0" data-column="0"></div>
+            <div class="box fa" data-row="0" data-column="1"></div>
+            <div class="box fa" data-row="0" data-column="2"></div>
+            <div class="box fa" data-row="1" data-column="0"></div>
+            <div class="box fa" data-row="1" data-column="1"></div>
+            <div class="box fa" data-row="1" data-column="2"></div>
+            <div class="box fa" data-row="2" data-column="0"></div>
+            <div class="box fa" data-row="2" data-column="1"></div>
+            <div class="box fa" data-row="2" data-column="2"></div>
+          </div>
+        </div>
+        <div class="statistics-side-bar">
+          <div class="nav-statistics-meta">
+            <a class="nav-statistics" href="/">
+              <p>Statistics:</p>
+            </a>
+          </div>
+          <div class="match-results">
+            <p>O: <span class="o-results"></span></p>
+            <p>X: <span class="x-results"></span></p>
+            <p>Draw: <span class="draw-results"></span></p>
+          </div>
         </div>
       </div>
-      <div class="statistics-side-bar"></div>
+
+      <div class="footer"><p>&copy; Copyright 2020 Inferysp</p></div>
     </div>
-    <div class="footer"><p>&copy; Copyright 2020 Inferysp</p></div>
+
     <script type="text/javascript" src="main.js"></script>
   </body>
 </html>
