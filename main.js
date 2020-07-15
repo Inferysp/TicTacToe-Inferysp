@@ -164,15 +164,16 @@ const check = () => {
       xResult.innerHTML = matchResults.score2;
       statistics(winner);
       roundIsOver();
-    } else if (rambo == false && turnInRound >= 10) {
+    }
+  });
+    if ( turnInRound == 10) {
       winner = "Draw";
       matchResults.draw += 1;
       drawResult.innerHTML = matchResults.draw;
       statistics(winner);
       roundIsOver();
       rambo = false;
-    }
-  });
+  };
   return winner, matchResults;
 };
 
