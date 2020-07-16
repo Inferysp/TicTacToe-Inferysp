@@ -44,8 +44,9 @@ const boardVanish = () => board = [
   ["", "", ""],
 ];
 
+window.addEventListener("DOMContentLoaded", startGame);
+
 // THIS FUNCTIONALITY IS NOT NECESSARY WHILE RUNNING ON GITHUB-PAGES
-// window.addEventListener("DOMContentLoaded", startGame);
 
 // newGameNav.addEventListener("click", beginNewGame);
 
