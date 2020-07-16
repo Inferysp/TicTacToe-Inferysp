@@ -1,6 +1,11 @@
-
-const PLAYER1 = "fa-circle-o";
-const PLAYER2 = "fa-times";
+function player(symbol, id, iconName, winner) {
+  this.symbol = symbol;
+  this.id = id;
+  this.iconName = iconName;
+  this.winner = winner;
+}
+const PLAYER_1 = new player('o', Math.floor(Math.random()*1000), 'fa-circle-o', "Winner: Player 1");
+const PLAYER_2 = new player('x', Math.floor(Math.random()*1000), 'fa-times', "Winner: Player 2");
 const matchResults = { score1: 0, score2: 0, draw: 0 };
 const combinations = [
   [0, 1, 2],
@@ -109,6 +114,7 @@ const playNextRound = (data) => {
 
 const finnishPick = (e, rowData, columnData, turnData, statTable) => {
   if (board[rowData][columnData] !== "") return;
+  console.log(turnData);
   e.target.classList.add(turnData);
   board[rowData][columnData] = turnData;
   turnInRound++;
@@ -121,35 +127,36 @@ function pick(e) {
   statTable.className = "stat-table-box";
   statBar.appendChild(statTable);
   const { row, column } = e.target.dataset;
-  if (winner === null || winner === "Winner: Player 2") {
-    const turn = turnInRound % 2 === 0 ? PLAYER2 : PLAYER1;
+  if (winner === null || winner === PLAYER_2.winner) {
+    const turn = turnInRound % 2 === 0 ? PLAYER_2.iconName : PLAYER_1.iconName;
     finnishPick(e, row, column, turn, statTable);
-  } else if (winner === "Winner: Player 1" || winner === "Draw") {
-    const turn = turnInRound % 2 === 0 ? PLAYER1 : PLAYER2;
+  } else if (winner === PLAYER_1.winner || winner === "Draw") {
+    const turn = turnInRound % 2 === 0 ? PLAYER_1.iconName : PLAYER_2.iconName;
     finnishPick(e, row, column, turn, statTable);
   }
 }
 
 const check = () => {
   let moves = {
-    "fa-times": [],
-    "fa-circle-o": [],
+    'fa-times': [],
+    'fa-circle-o': [],
   };
   result = board.reduce((total, row) => total.concat(row));
+  console.log(result);
   result.forEach((field, index) =>
     moves[field] ? moves[field].push(index) : null
   );
   combinations.forEach((combinations) => {
-    if (combinations.every((index) => moves[PLAYER1].indexOf(index) > -1)) {
-      winner = "Winner: Player 1";
+    if (combinations.every((index) => moves[PLAYER_1.iconName].indexOf(index) > -1)) {
+      winner = PLAYER_1.winner;
       matchResults.score1 += 1;
       oResult.innerHTML = matchResults.score1;
       writeWhoWin();
       roundFinishing();
     } else if (
-      combinations.every((index) => moves[PLAYER2].indexOf(index) > -1)
+      combinations.every((index) => moves[PLAYER_2.iconName].indexOf(index) > -1)
     ) {
-      winner = "Winner: Player 2";
+      winner = PLAYER_2.winner;
       matchResults.score2 += 1;
       xResult.innerHTML = matchResults.score2;
       writeWhoWin();
@@ -191,10 +198,10 @@ const pickPositionWrite = (rowData, columnData, turnData, statTableData) => {
 };
 
 const whoStartRound = () => {
-  if (winner == "Winner: Player 2") {
+  if (winner == PLAYER_2.winner) {
     return `PLAYER 1 begins round ${playRound}`;
   }
-  else if (winner == "Winner: Player 1") {
+  else if (winner == PLAYER_1.winner) {
     return `PLAYER 2 begins round ${playRound}`;
   }
   else if (winner == 'Draw' || winner == null) {

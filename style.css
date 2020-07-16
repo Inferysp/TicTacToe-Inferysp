@@ -83,6 +83,9 @@ a {
   height: 78vh;
   border: solid 1px black;
 }
+.statistic-dynamic-side-bar:last-child {
+  position: sticky;
+}
 .nav-statistics-meta {
   display: flex;
   justify-content: center;
