@@ -6,6 +6,23 @@ function player(symbol, id, iconName, winner) {
 }
 const PLAYER_1 = new player('o', Math.floor(Math.random()*1000), 'fa-circle-o', "Winner: Player 1");
 const PLAYER_2 = new player('x', Math.floor(Math.random()*1000), 'fa-times', "Winner: Player 2");
+const statContainerBar = document.querySelector(".statistics-side-bar");
+const newGameNav = document.querySelector(".nav-item-link-new-game");
+const gameContainer = document.querySelector(".board-container");
+const element = document.querySelector(".board");
+const oResult = document.querySelector(".o-results");
+const xResult = document.querySelector(".x-results");
+const drawResult = document.querySelector(".draw-results");
+const boxes = [...document.querySelectorAll(".box")];
+boxes.forEach((box) => box.addEventListener("click", pick));
+const statBar = document.createElement("div");
+const gameDiv = document.createElement("div");
+const gameButton = document.createElement("button");
+statBar.className = "statistic-dynamic-side-bar";
+gameDiv.className = "game-btn-div";
+gameButton.className = "game-btn";
+gameContainer.appendChild(gameDiv);
+gameDiv.appendChild(gameButton);
 const matchResults = { score1: 0, score2: 0, draw: 0 };
 const combinations = [
   [0, 1, 2],
@@ -27,53 +44,30 @@ const boardVanish = () => board = [
   ["", "", ""],
 ];
 
+// THIS FUNCTIONALITY IS NOT NECESSARY WHILE RUNNING ON GITHUB-PAGES
+// window.addEventListener("DOMContentLoaded", startGame);
 
-const statContainerBar = document.querySelector(".statistics-side-bar");
-const newGameNav = document.querySelector(".nav-item-link-new-game");
-const gameContainer = document.querySelector(".board-container");
-const element = document.querySelector(".board");
-const oResult = document.querySelector(".o-results");
-const xResult = document.querySelector(".x-results");
-const drawResult = document.querySelector(".draw-results");
+// newGameNav.addEventListener("click", beginNewGame);
 
-const boxes = [...document.querySelectorAll(".box")];
-boxes.forEach((box) => box.addEventListener("click", pick));
+// function beginNewGame() {
+//   const statBarDelete = document.querySelector(".statistic-dynamic-side-bar");
+//   const removeChildrenElement = () => {
+//     while (statBarDelete.firstChild) {
+//       statBarDelete.removeChild(statBarDelete.firstChild);
+//     }
+//   };
+//   statBarDelete != null ? removeChildrenElement() : null;
 
-const statBar = document.createElement("div");
-const gameDiv = document.createElement("div");
-const gameButton = document.createElement("button");
-
-statBar.className = "statistic-dynamic-side-bar";
-gameDiv.className = "game-btn-div";
-gameContainer.appendChild(gameDiv);
-
-
-gameButton.className = "game-btn";
-gameDiv.appendChild(gameButton);
-
-newGameNav.addEventListener("click", beginNewGame);
-
-window.addEventListener("DOMContentLoaded", startGame);
-
-function beginNewGame() {
-  const statBarDelete = document.querySelector(".statistic-dynamic-side-bar");
-  const removeChildrenElement = () => {
-    while (statBarDelete.firstChild) {
-      statBarDelete.removeChild(statBarDelete.firstChild);
-    }
-  };
-  statBarDelete != null ? removeChildrenElement() : null;
-
-  gameDiv.style.visibility = "hidden"
-    ? (gameDiv.style.visibility = "visible")
-    : null;
-  element.style.display = "none";
-  oResult.innerHTML = null;
-  xResult.innerHTML = null;
-  drawResult.innerHTML = null;
-  gameButton.innerText = `Play the Game!`;
-  playRound = 1;
-}
+//   gameDiv.style.visibility = "hidden"
+//     ? (gameDiv.style.visibility = "visible")
+//     : null;
+//   element.style.display = "none";
+//   oResult.innerHTML = null;
+//   xResult.innerHTML = null;
+//   drawResult.innerHTML = null;
+//   gameButton.innerText = `Play the Game!`;
+//   playRound = 1;
+// }
 
 function startGame() {
   element.style.display = "none";
@@ -87,53 +81,60 @@ function btnClick() {
   gameDiv.style.visibility = "hidden";
   element.style.display = "grid";
   element.style.setProperty("pointer-events", "auto");
-
   const whichPlayerStart = document.createElement("p");
-  whichPlayerStart.id = "player-begins-class";
+  whichPlayerStart.className = `player-begins-class-${playRound}`;
+  whichPlayerStart.style.padding = '4px';
+  whichPlayerStart.display = 'flex';
+  whichPlayerStart.justifyContent = 'center';
+  playRound > 1 ? document.querySelector(`.player-begins-class-${playRound-1}`).style.borderTop = 'solid 2px pink' : null;
   whichPlayerStart.innerText = whoStartRound();
-  statBar.appendChild(whichPlayerStart);
-
+  statBar.prepend(whichPlayerStart);
   boxes.forEach((e) => (e.className = "box fa"));
   boardVanish();
 }
 
 const playNextRound = (data) => {
   data = playRound == 1 ? 1 : playRound;
-
   element.style.setProperty("pointer-events", "none");
   gameDiv.style.visibility = "visible";
   gameButton.innerText = `Let's play round ${data}`;
   gameButton.addEventListener("click", btnClick);
 };
 
-// const setPick = () => {
-//   const statDiv = document.createElement("table");
-//   statDiv.className = "stat-table-box";
-//   statBar.appendChild(statDiv);
-// }
-
-const finnishPick = (e, rowData, columnData, turnData, statTable) => {
+const innerPickProcess = (e, rowData, columnData, turnData, statTable) => {
   if (board[rowData][columnData] !== "") return;
-  console.log(turnData);
   e.target.classList.add(turnData);
   board[rowData][columnData] = turnData;
+  writePickPosition(rowData, columnData, turnData, statTable);
   turnInRound++;
-  pickPositionWrite(rowData, columnData, turnData, statTable);
   check();
 }
 
 function pick(e) {
   const statTable = document.createElement("table");
   statTable.className = "stat-table-box";
-  statBar.appendChild(statTable);
+  const whichPlayerStart = document.querySelector(`.player-begins-class-${playRound}`);
+  whichPlayerStart.append(statTable);
   const { row, column } = e.target.dataset;
   if (winner === null || winner === PLAYER_2.winner) {
     const turn = turnInRound % 2 === 0 ? PLAYER_2.iconName : PLAYER_1.iconName;
-    finnishPick(e, row, column, turn, statTable);
+    innerPickProcess(e, row, column, turn, statTable);
   } else if (winner === PLAYER_1.winner || winner === "Draw") {
     const turn = turnInRound % 2 === 0 ? PLAYER_1.iconName : PLAYER_2.iconName;
-    finnishPick(e, row, column, turn, statTable);
+    innerPickProcess(e, row, column, turn, statTable);
   }
+}
+
+const innerCheckProcess = (tellMeWhoWin) => {
+  if(tellMeWhoWin == PLAYER_1.winner) {
+    matchResults.score1 += 1;
+    oResult.innerHTML = matchResults.score1;
+  } else if(tellMeWhoWin == PLAYER_2.winner) {
+    matchResults.score2 += 1;
+    xResult.innerHTML = matchResults.score2;
+  }
+  writeWhoWin();
+  roundFinishing();
 }
 
 const check = () => {
@@ -142,28 +143,21 @@ const check = () => {
     'fa-circle-o': [],
   };
   result = board.reduce((total, row) => total.concat(row));
-  console.log(result);
   result.forEach((field, index) =>
     moves[field] ? moves[field].push(index) : null
   );
   combinations.forEach((combinations) => {
     if (combinations.every((index) => moves[PLAYER_1.iconName].indexOf(index) > -1)) {
       winner = PLAYER_1.winner;
-      matchResults.score1 += 1;
-      oResult.innerHTML = matchResults.score1;
-      writeWhoWin();
-      roundFinishing();
+      innerCheckProcess(winner);
     } else if (
       combinations.every((index) => moves[PLAYER_2.iconName].indexOf(index) > -1)
     ) {
       winner = PLAYER_2.winner;
-      matchResults.score2 += 1;
-      xResult.innerHTML = matchResults.score2;
-      writeWhoWin();
-      roundFinishing();
+      innerCheckProcess(winner)
     }
   });
-    if ( turnInRound == 10) {
+    if (turnInRound == 10) {
       winner = "Draw";
       matchResults.draw += 1;
       drawResult.innerHTML = matchResults.draw;
@@ -182,29 +176,25 @@ const writeWhoWin = () => {
   const statisticsElement = document.createElement("p");
   statisticsElement.className ="round-winner-paragraph";
   statisticsElement.innerText = `${winner}!`;
-  statBar.appendChild(statisticsElement);
+  const whichPlayerStart = document.querySelector(`.player-begins-class-${playRound}`);
+  whichPlayerStart.append(statisticsElement);
 };
 
-const pickPositionWrite = (rowData, columnData, turnData, statTableData) => {
+const writePickPosition = (rowData, columnData, turnData, statTableData) => {
   const moveCoOrdinates = document.createElement("tr");
-  moveCoOrdinates.id = `move-coordinates`;
-  const player = turnData == "fa-times" ? "x" : "o";
+  const player = turnData == PLAYER_2.iconName ? "x" : "o";
   rowData = parseInt(rowData, 10);
   columnData = parseInt(columnData, 10);
-  rowData += 1;
-  columnData += 1;
-  moveCoOrdinates.innerHTML = `turn ${turnInRound}. ${player} - row: ${rowData} -col: ${columnData} .`;
+  moveCoOrdinates.innerHTML = `turn ${turnInRound}. ${player} - row: ${rowData+1} -col: ${columnData+1} .`;
   statTableData.appendChild(moveCoOrdinates);
 };
 
 const whoStartRound = () => {
   if (winner == PLAYER_2.winner) {
     return `PLAYER 1 begins round ${playRound}`;
-  }
-  else if (winner == PLAYER_1.winner) {
+  } else if (winner == PLAYER_1.winner) {
     return `PLAYER 2 begins round ${playRound}`;
-  }
-  else if (winner == 'Draw' || winner == null) {
+  } else if (winner == 'Draw' || winner == null) {
     return  `PLAYER 1 begins round ${playRound}`;
   }
 };
